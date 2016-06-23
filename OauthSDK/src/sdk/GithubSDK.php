@@ -2,62 +2,73 @@
 namespace OauthSDK\sdk;
 
 use OauthSDK\Oauth;
+
+/**
+ * Class GithubSDK
+ * @package OauthSDK\sdk
+ */
 class GithubSDK extends Oauth{
 	/**
 	 * 获取requestCode的api接口
 	 * @var string
 	 */
-	protected $GetRequestCodeURL = 'https://github.com/login/oauth/authorize';
+	protected $getRequestCodeURL = 'https://github.com/login/oauth/authorize';
 
 	/**
 	 * 获取access_token的api接口
 	 * @var string
 	 */
-	protected $GetAccessTokenURL = 'https://github.com/login/oauth/access_token';
+	protected $getAccessTokenURL = 'https://github.com/login/oauth/access_token';
 
 	/**
 	 * API根路径
 	 * @var string
 	 */
-	protected $ApiBase = 'https://api.github.com/';
+	protected $apiBase = 'https://api.github.com/';
 
 	/**
 	 * 组装接口调用参数 并调用接口
 	 * @param  string $api    微博API
 	 * @param  string $param  调用API的额外参数
 	 * @param  string $method HTTP请求方法 默认为GET
-	 * @return json
+	 * @param bool $multi
+	 * @return mixed
+	 * @throws \Exception
 	 */
 	public function call($api, $param = '', $method = 'GET', $multi = false){
 		/* Github 调用公共参数 */
 		$params = array();
-		$header = array("Authorization: bearer {$this->Token['access_token']}");
+		$header = array("Authorization: bearer {$this->token['access_token']}");
 
 		$data = $this->http($this->url($api), $this->param($params, $param), $method, $header);
 		return json_decode($data, true);
 	}
-	
+
 	/**
 	 * 解析access_token方法请求后的返回值
-	 * @param string $result 获取access_token的方法的返回值
+	 * @param $result 获取access_token的方法的返回值
+	 * @param $extend
+	 * @return mixed
+	 * @throws \Exception
 	 */
 	protected function parseToken($result, $extend){
 		parse_str($result, $data);
 		if($data['access_token'] && $data['token_type']){
-			$this->Token = $data;
+			$this->token = $data;
 			$data['openid'] = $this->openid();
 			return $data;
 		} else
 			throw new \Exception("获取 Github ACCESS_TOKEN出错：未知错误");
 	}
-	
+
 	/**
 	 * 获取当前授权应用的openid
-	 * @return string
+	 * @return mixed
+	 * @throws \Exception
 	 */
 	public function openid(){
-		if(isset($this->Token['openid']))
-			return $this->Token['openid'];
+		if(isset($this->token['openid']))
+			return $this->token['openid'];
 		
 		$data = $this->call('user');
 		if(!empty($data['id']))
