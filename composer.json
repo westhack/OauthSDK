@@ -1,13 +1,13 @@
 {
     "name": "fakerpp/oauthsdk",
-    "description":"oauth sdk",
+    "description":"第三方登录",
     "license": "MIT",
-    "keywords":["sdk"],
+    "keywords":["QQ登录，微信登录，微博登录"],
     "version": "1.0.0",
     "authors":[
         {
             "name":"Lazy",
-            "email":"layz@xinrennet.com"
+            "email":"lazy@xinrennet.com"
         }
     ],
     "require":
@@ -18,7 +18,7 @@
     {
         "psr-4":
         {
-            "OauthSDK\\": "OauthSDK/src/"
+            "OauthSDK\\": "src/"
         }
     }
 }
