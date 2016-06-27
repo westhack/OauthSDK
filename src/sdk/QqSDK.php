@@ -8,18 +8,19 @@ use OauthSDK\Oauth;
  * @package OauthSDK\sdk
  */
 class QqSDK extends Oauth{
+
 	/**
 	 * 获取requestCode的api接口
 	 * @var string
 	 */
 	protected $getRequestCodeURL = 'https://graph.qq.com/oauth2.0/authorize';
-	
+
 	/**
 	 * 获取access_token的api接口
 	 * @var string
 	 */
 	protected $getAccessTokenURL = 'https://graph.qq.com/oauth2.0/token';
-	
+
 	/**
 	 * 获取request_code的额外参数,可在配置中修改 URL查询字符串格式
 	 * @var srting
@@ -44,12 +45,12 @@ class QqSDK extends Oauth{
 	public function call($api, $param = '', $method = 'GET', $multi = false){
 		/* 腾讯QQ调用公共参数 */
 		$params = array(
-			'oauth_consumer_key' => $this->AppKey,
-			'access_token'       => $this->Token['access_token'],
+			'oauth_consumer_key' => $this->appKey,
+			'access_token'       => $this->token['access_token'],
 			'openid'             => $this->openid(),
 			'format'             => 'json'
 		);
-		
+
 		$data = $this->http($this->url($api), $this->param($params, $param), $method);
 		return json_decode($data, true);
 	}
@@ -63,8 +64,9 @@ class QqSDK extends Oauth{
 	protected function parseToken($result, $extend){
 		parse_str($result, $data);
 		if($data['access_token'] && $data['expires_in']){
-			$this->token    = $data;
+			$this->token = $data;
 			$data['openid'] = $this->openid();
+			$this->openid = $data['openid'];
 			return $data;
 		} else
 			throw new \Exception("获取腾讯QQ ACCESS_TOKEN 出错：{$result}");
@@ -92,6 +94,7 @@ class QqSDK extends Oauth{
 	}
 
 	public function getUserInfo(){
+
 		$data = $this->call('user/get_user_info');
 		// 将获取到的信息进行整理
 		if ($data['ret'] == 0) {
@@ -100,8 +103,9 @@ class QqSDK extends Oauth{
 			$userInfo['avatar'] =  $data['figureurl_qq_2']!=''?$data['figureurl_qq_2']:$data['figureurl_qq_1'];
 			$userInfo['sex'] = $data['gender']=='男'?1:2;
 			// 此处的$userInfo就是需要的用户信息
+			return $userInfo;
 		} else {
-			$this->error('系统出错;请稍后再试！',U('index/index'));
+			return false;
 		}
 	}
 }

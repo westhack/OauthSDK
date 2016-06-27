@@ -87,10 +87,11 @@ class SinaSDK extends Oauth{
 		$params['uid'] = $this->openid();
 		$response = $this->call('users/show',$params);
 		if ($response['ret'] == 0) {
-			$data['openid'] = $this->openid();
-			$data['username'] = $response['screen_name'];
-			$data['avatar'] = $response['profile_image_url'];
-			$data['sex'] = $response['gender']=='m'?1:2;
+			$userInfo['openid'] = $this->openid();
+			$userInfo['username'] = $response['screen_name'];
+			$userInfo['avatar'] = $response['profile_image_url'];
+			$userInfo['sex'] = $response['gender']=='m'?1:2;
+			return $userInfo;
 		} else {
 			return false;
 		}
