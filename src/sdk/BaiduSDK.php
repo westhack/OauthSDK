@@ -3,6 +3,10 @@ namespace OauthSDK\sdk;
 
 use OauthSDK\Oauth;
 
+/**
+ * Class BaiduSDK
+ * @package OauthSDK\sdk
+ */
 class BaiduSDK extends Oauth{
 	/**
 	 * 获取requestCode的api接口
@@ -73,5 +77,25 @@ class BaiduSDK extends Oauth{
 		else
 			throw new \Exception('没有获取到百度用户ID！');
 	}
+
+
+    /**
+     * 获取用户信息
+     * @return array||bool
+     * @throws \Exception
+     */
+    public function getUserInfo(){
+        $response  = $this->call('passport/users/getInfo');
+        if($response['userid']){
+            $data['openid'] = $response['userid'];
+            $data['username'] = $response['username'];
+            $data['avatar'] = $response['portrait'];
+            $data['sex'] = $response['sex']==1?1:2;
+            return $data;
+        }else{
+            return false;
+        }
+    }
+
 	
 }

@@ -24,7 +24,7 @@ class TaobaoSDK extends Oauth{
 	
 	/**
 	 * 组装接口调用参数 并调用接口
-	 * @param  string $api    微博API
+	 * @param  string $api    接口API
 	 * @param  string $param  调用API的额外参数
 	 * @param  string $method HTTP请求方法 默认为GET
 	 * @param bool $multi
@@ -72,5 +72,24 @@ class TaobaoSDK extends Oauth{
 		else
 			throw new \Exception('没有获取到淘宝网用户ID！');
 	}
+
+    /**
+     * 获取用户信息
+     * @return array||bool
+     * @throws \Exception
+     */
+    public function getUserInfo(){
+        $params['fields'] = 'nick,avatar,sex';
+        $response  = $this->call('taobao.user.buyer.get',$params);
+        if($response['openid']){
+            $data['openid'] = $this->openid();
+            $data['username'] = $response['nick'];
+            $data['avatar'] = $response['avatar'];
+            $data['sex'] = $response['sex']=='m'?1:2;
+            return $data;
+        }else{
+            return false;
+        }
+    }
 	
 }

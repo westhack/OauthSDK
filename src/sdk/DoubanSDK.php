@@ -72,5 +72,23 @@ class DoubanSDK extends Oauth{
 		else
 			throw new \Exception('没有获取到豆瓣用户ID！');
 	}
+
+    /**
+     * 获取用户信息
+     * @return array||bool
+     * @throws \Exception
+     */
+    public function getUserInfo(){
+        $response  = $this->call('user/~me"');
+        if($response['uid ']){
+            $data['openid'] = $response['uid'];
+            $data['username'] = $response['name'];
+            $data['avatar'] = $response['large_avatar']!=''?$response['large_avatar']:$response['avatar'];
+            $data['sex'] = $response['sex']==1?1:2;
+            return $data;
+        }else{
+            return false;
+        }
+    }
 	
 }

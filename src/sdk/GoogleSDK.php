@@ -83,5 +83,22 @@ class GoogleSDK extends Oauth{
 		else
 			throw new \Exception('没有获取到 Google 用户ID！');
 	}
-	
+
+    /**
+     * 获取当前授权应用的openid
+     * @return mixed
+     * @throws \Exception
+     */
+    public function getUserInfo(){
+        $response = $this->call('userinfo');
+        if($response['openid']){
+            $data['openid'] = $response['id'];
+            $data['username'] = $response['name'];
+            $data['avatar'] = $response['picture'];
+            $data['sex'] = $response['gender']=='male'?1:2;
+            return $data;
+        }else{
+            return false;
+        }
+    }
 }

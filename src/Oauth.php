@@ -1,8 +1,9 @@
 <?php
 namespace OauthSDK;
-
-use OauthSDK\Config;
-
+/**
+ * Class Oauth
+ * @package OauthSDK
+ */
 abstract class Oauth{
 
 	protected static $instance ;
@@ -299,5 +300,11 @@ abstract class Oauth{
 	 * 抽象方法，在SNSSDK中实现
 	 * 获取当前授权用户的SNS标识
 	 */
-	abstract public function openid();	
+	abstract public function openid();
+
+    /**
+     * 抽象方法，在SNSSDK中实现
+     * 获取用户信息
+     */
+	abstract public function getUserInfo();
 }

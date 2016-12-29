@@ -8,12 +8,14 @@ use OauthSDK\Oauth;
  * @package OauthSDK\sdk
  */
 class WechatSDK extends Oauth{
+
+
 	/**
 	 * 获取requestCode的api接口
 	 * @var string
 	 */
 	protected $getRequestCodeURL = 'https://open.weixin.qq.com/connect/qrconnect';
-	
+
 	/**
 	 * 获取access_token的api接口
 	 * @var string
@@ -33,6 +35,30 @@ class WechatSDK extends Oauth{
 	protected $apiBase = 'https://api.weixin.qq.com/';
 
 
+
+    /**
+     * 是否微信打开
+     * @return bool
+     */
+    private function isWechat(){
+        if ( strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 获取requestCode的api接口
+     * @return string
+     */
+    public function _getRequestCodeURL(){
+        if($this->isWechat()){
+            $this->getRequestCodeURL = 'https://open.weixin.qq.com/connect/oauth2/authorize';
+        }else{
+            $this->getRequestCodeURL = 'https://open.weixin.qq.com/connect/qrconnect';
+        }
+        return $this->getRequestCodeURL;
+    }
 	/**
 	 * 组装接口调用参数 并调用接口
 	 * @param  string $api    微博API
@@ -76,7 +102,7 @@ class WechatSDK extends Oauth{
 				throw new \Exception('AUTHORIZE配置不正确！');
 			}
 		}
-		return $this->getRequestCodeURL . '?' . http_build_query($params);
+		return $this->_getRequestCodeURL() . '?' . http_build_query($params);
 	}
 
 	/**

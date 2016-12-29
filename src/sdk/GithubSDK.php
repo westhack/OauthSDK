@@ -76,5 +76,25 @@ class GithubSDK extends Oauth{
 		else
 			throw new \Exception('没有获取到 Github 用户ID！');
 	}
-	
+
+    /**
+     * 获取用户信息
+     * @return array||bool
+     * @throws \Exception
+     */
+    public function getUserInfo(){
+        $response  = $this->call('user');
+        if($response['id']){
+            $data['openid'] = $response['userid'];
+            $data['username'] = $response['name'];
+            $data['avatar'] = $response['avatar_url'];
+            $data['sex'] = $response['sex']==1?1:2;
+            return $data;
+        }else{
+            return false;
+        }
+    }
+
+
+
 }
