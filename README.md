@@ -53,7 +53,7 @@ $code = $_GET['code'];
 
 (empty($type) || empty($code)) && exit('参数错误');
 $sns = Oauth::getInstance($type,$config);
-$tokenArr = $sns->getAccessToken($code, $extend);
+$tokenArr = $sns->getAccessToken($code);
 
 $openid = $tokenArr['openid'];
 $token = $tokenArr['access_token'];
