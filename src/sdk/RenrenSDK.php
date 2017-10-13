@@ -63,7 +63,7 @@ class RenrenSDK extends Oauth{
 		foreach ($params as $key => $value){
 			$param[] = "{$key}={$value}";
 		}
-		$sign = implode('', $param).$this->AppSecret;
+		$sign = implode('', $param).$this->appSecret;
 		$params['sig'] = md5($sign);
 
 		return $params;

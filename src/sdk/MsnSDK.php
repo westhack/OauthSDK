@@ -21,10 +21,10 @@ class MsnSDK extends Oauth{
 	protected $getAccessTokenURL = 'https://login.live.com/oauth20_token.srf';
 
 	/**
-	 * 获取request_code的额外参数 URL查询字符串格式
+	 * 应用授权作用域
 	 * @var srting
 	 */
-	protected $authorize = 'scope=wl.basic wl.offline_access wl.signin wl.emails wl.photos';
+	protected $scope = 'wl.basic wl.offline_access wl.signin wl.emails wl.photos';
 
 	/**
 	 * API根路径

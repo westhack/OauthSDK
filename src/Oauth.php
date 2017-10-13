@@ -48,12 +48,7 @@ abstract class Oauth{
 	 */
 	protected $callback = '';
 	
-	/**
-	 * 获取request_code的额外参数 URL查询字符串格式
-	 * @var srting
-	 */
-	protected $authorize = '';
-	
+
 	/**
 	 * 获取request_code请求的URL
 	 * @var string
@@ -84,13 +79,26 @@ abstract class Oauth{
 	 */
 	private $type = '';
 
+    /**
+     * 应用授权作用域
+     * @var string
+     */
+	protected $scope;
+
+    /**
+     * 请求额外参数,数组或者URL查询字符串格式
+     * @var array | string
+     */
+	protected $customParams;
+
 	/**
 	 * 构造方法，配置应用信息
-	 * Oauth constructor.
-	 * @param null $type
-	 * @param array $config
-	 * @param null $token
-	 */
+     * Oauth constructor.
+     * @param null $type
+     * @param array $config
+     * @param null $token
+     * @throws \Exception
+     */
 	public function __construct($type=null, $config=array(),$token = null){
 		//设置SDK类型
 		$this->type = strtoupper($type);
@@ -102,6 +110,8 @@ abstract class Oauth{
 			$this->appKey    = $this->config['APP_KEY'];
 			$this->appSecret = $this->config['APP_SECRET'];
 			$this->callback = $this->config['CALLBACK'];
+            if($this->config['SCOPE']!=null)$this->scope = $this->config['SCOPE'];
+            if($this->config['CUSTOM_PARAMS']!=null)$this->customParams = $this->config['CUSTOM_PARAMS'];
 			$this->token     = $token; //设置获取到的TOKEN
 		}
 	}
@@ -127,37 +137,26 @@ abstract class Oauth{
     }
 
 	/**
-	 * 初始化配置
-	 */
-	private function config(){
-		$config = $this->config;
-		if(!empty($config['AUTHORIZE']))
-			$this->authorize = $config['AUTHORIZE'];
-		if(!empty($config['CALLBACK']))
-			$this->callback = $config['CALLBACK'];
-		else
-			throw new \Exception('请配置回调页面地址');
-	}
-	
-	/**
 	 * 请求code 
 	 */
 	public function getRequestCodeURL(){
-		$this->config();
 		//Oauth 标准参数
 		$params = array(
 			'client_id'     => $this->appKey,
 			'redirect_uri'  => $this->callback,
 			'response_type' => $this->responseType,
+			'scope' => $this->scope,
 		);
 		
 		//获取额外参数
-		if($this->authorize){
-			parse_str($this->authorize, $_param);
+		if($this->customParams){
+		    if(!is_array($this->customParams)){
+                parse_str($this->customParams, $_param);
+            }
 			if(is_array($_param)){
 				$params = array_merge($params, $_param);
 			} else {
-				throw new \Exception('AUTHORIZE配置不正确！');
+				throw new \Exception('CUSTOM_PARAMS配置不正确！');
 			}
 		}
 		return $this->getRequestCodeURL . '?' . http_build_query($params);
@@ -171,7 +170,6 @@ abstract class Oauth{
 	 * @throws \Exception
 	 */
 	public function getAccessToken($code, $extend = null){
-		$this->config();
 		$params = array(
 				'client_id'     => $this->appKey,
 				'client_secret' => $this->appSecret,

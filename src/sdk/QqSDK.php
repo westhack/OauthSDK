@@ -22,10 +22,10 @@ class QqSDK extends Oauth{
 	protected $getAccessTokenURL = 'https://graph.qq.com/oauth2.0/token';
 
 	/**
-	 * 获取request_code的额外参数,可在配置中修改 URL查询字符串格式
+	 * 应用授权作用域
 	 * @var srting
 	 */
-	protected $authorize = 'scope=get_user_info,add_share';
+	protected $scope = 'get_user_info';
 
 	/**
 	 * API根路径
@@ -48,7 +48,7 @@ class QqSDK extends Oauth{
 			'oauth_consumer_key' => $this->appKey,
 			'access_token'       => $this->token['access_token'],
 			'openid'             => $this->openid(),
-			'format'             => 'json'
+			'format'             => 'json',
 		);
 
 		$data = $this->http($this->url($api), $this->param($params, $param), $method);

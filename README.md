@@ -25,41 +25,44 @@ $config =  array(
     'QQ' => array(
         'APP_KEY' => '123456', //应用注册成功后分配的 APP ID
         'APP_SECRET' => '9cc9ac2fb17d010104d8a58dbebb4d3a', //应用注册成功后分配的KEY
-        'CALLBACK' =>  'http://www.example.com/callback.php?type=qq',//回调URL
+        'CALLBACK' =>  'http://www.example.com/callback.php?client=qq',//回调URL
+        'SCOPE' =>  'get_user_info',//应用授权作用域
     ),
     //新浪微博配置
     'SINA' => array(
         'APP_KEY' => '123456', //应用注册成功后分配的 APP ID
         'APP_SECRET' => '9cc9ac2fb17d010104d8a58dbebb4d3a', //应用注册成功后分配的KEY
-        'CALLBACK' => 'http://www.example.com/callback.php?type=sina',//回调URL
+        'CALLBACK' => 'http://www.example.com/callback.php?client=sina',//回调URL
+        'SCOPE' => 'all',//应用授权作用域
     ),
     //腾讯微信配置
     'WECHAT' => array(
         'APP_KEY' => '123456', //应用注册成功后分配的 APP ID
         'APP_SECRET' => '9cc9ac2fb17d010104d8a58dbebb4d3a', //应用注册成功后分配的KEY
-        'CALLBACK' => 'http://www.example.com/callback.php?type=wechat',//回调URL
+        'CALLBACK' => 'http://www.example.com/callback.php?client=wechat',//回调URL
+        'SCOPE' => 'snsapi_userinfo',//应用授权作用域
     )
 );
 //login
-$type = $_GET['type'];
-$sns = Oauth::getInstance($type,$config);
+$client = $_GET['client'];
+$sns = Oauth::getInstance($client,$config);
 //跳转到授权页面
 header('Location: ' . $sns->getRequestCodeURL());
 
 
 //callback
-$type = $_GET['type'];
+$client = $_GET['client'];
 $code = $_GET['code'];
 
-(empty($type) || empty($code)) && exit('参数错误');
-$sns = Oauth::getInstance($type,$config);
+(empty($client) || empty($code)) && exit('参数错误');
+$sns = Oauth::getInstance($client,$config);
 $tokenArr = $sns->getAccessToken($code);
 
 $openid = $tokenArr['openid'];
 $token = $tokenArr['access_token'];
 //获取当前登录用户信息
 if ($openid) {
-    $userinfo = $userInfo = $sns->getUserInfo();
+    $userinfo  = $sns->getUserInfo();
     exit( 'SUCCESS');
 } else {
     exit('系统出错;请稍后再试！');

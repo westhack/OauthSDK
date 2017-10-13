@@ -22,11 +22,6 @@ class WechatSDK extends Oauth{
 	 */
 	protected $getAccessTokenURL = 'https://api.weixin.qq.com/sns/oauth2/access_token';
 	
-	/**
-	 * 获取request_code的额外参数,可在配置中修改 URL查询字符串格式
-	 * @var srting
-	 */
-	protected $authorize = 'scope=snsapi_login';
 
 	/**
 	 * API根路径
@@ -34,7 +29,10 @@ class WechatSDK extends Oauth{
 	 */
 	protected $apiBase = 'https://api.weixin.qq.com/';
 
-
+    /**
+     * @var string
+     */
+    protected $scope = 'snsapi_login';
 
     /**
      * 是否微信打开
@@ -91,17 +89,20 @@ class WechatSDK extends Oauth{
 			'appid'     => $this->appKey,
 			'redirect_uri'  => $this->callback,
 			'response_type' => $this->responseType,
+            'scope' => $this->scope,
 		);
 
 		//获取额外参数
-		if($this->authorize){
-			parse_str($this->authorize, $_param);
-			if(is_array($_param)){
-				$params = array_merge($params, $_param);
-			} else {
-				throw new \Exception('AUTHORIZE配置不正确！');
-			}
-		}
+        if($this->customParams){
+            if(!is_array($this->customParams)){
+                parse_str($this->customParams, $_param);
+            }
+            if(is_array($_param)){
+                $params = array_merge($params, $_param);
+            } else {
+                throw new \Exception('CUSTOM_PARAMS配置不正确！');
+            }
+        }
 		return $this->_getRequestCodeURL() . '?' . http_build_query($params);
 	}
 

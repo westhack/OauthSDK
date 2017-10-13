@@ -28,7 +28,7 @@ class T163SDK extends Oauth{
 
 	/**
 	 * 组装接口调用参数 并调用接口
-	 * @param  string $api    微博API
+	 * @param  string $api    API
 	 * @param  string $param  调用API的额外参数
 	 * @param  string $method HTTP请求方法 默认为GET
 	 * @param bool $multi

@@ -25,6 +25,11 @@ class TencentSDK extends Oauth{
 	 * @var string
 	 */
 	protected $apiBase = 'https://open.t.qq.com/api/';
+
+    /**
+     * @var string
+     */
+	protected $scope = 'all';
 	
 	/**
 	 * 组装接口调用参数 并调用接口
@@ -43,7 +48,6 @@ class TencentSDK extends Oauth{
 			'openid'             => $this->openid(),
 			'clientip'           => $this->getUserIp(),
 			'oauth_version'      => '2.a',
-			'scope'              => 'all',
 			'format'             => 'json'
 		);
 
